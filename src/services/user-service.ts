@@ -85,3 +85,21 @@ export const getCurrentUser = async (token: string) => {
 
   return { data: result };
 };
+
+export const logoutUser = async (token: string) => {
+  // 1. Cek apakah session ada
+  const [session] = await db
+    .select()
+    .from(sessions)
+    .where(eq(sessions.token, token))
+    .limit(1);
+
+  if (!session) {
+    throw new Error("Unauthorized");
+  }
+
+  // 2. Hapus session dari database
+  await db.delete(sessions).where(eq(sessions.token, token));
+
+  return { data: "OK" };
+};
