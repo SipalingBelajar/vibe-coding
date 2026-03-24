@@ -1,5 +1,5 @@
 import { Elysia, t } from "elysia";
-import { registerUser, loginUser } from "../services/user-service";
+import { registerUser, loginUser, getCurrentUser } from "../services/user-service";
 
 export const userRoutes = new Elysia({ prefix: "/api" })
   .post(
@@ -58,7 +58,12 @@ export const userRoutes = new Elysia({ prefix: "/api" })
           return { error: "Email atau password salah" };
         }
 
-        const token = authHeader.split(" ")[1];
+        const [_, token] = authHeader.split(" ");
+        if (!token) {
+          set.status = 401;
+          return { error: "Email atau password salah" };
+        }
+
         const result = await getCurrentUser(token);
         return result;
       } catch (error: any) {
