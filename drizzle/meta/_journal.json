@@ -15,6 +15,13 @@
       "when": 1774343058527,
       "tag": "0001_opposite_rocket_raccoon",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1774345563655,
+      "tag": "0002_red_franklin_storm",
+      "breakpoints": true
     }
   ]
 }
