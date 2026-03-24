@@ -1,5 +1,5 @@
 import { Elysia, t } from "elysia";
-import { registerUser, loginUser, getCurrentUser } from "../services/user-service";
+import { registerUser, loginUser, getCurrentUser, logoutUser } from "../services/user-service";
 
 export const userRoutes = new Elysia({ prefix: "/api" })
   .post(
@@ -65,6 +65,34 @@ export const userRoutes = new Elysia({ prefix: "/api" })
         }
 
         const result = await getCurrentUser(token);
+        return result;
+      } catch (error: any) {
+        if (error.message === "Unauthorized") {
+          set.status = 401;
+          return { error: error.message };
+        }
+        set.status = 500;
+        return { error: "Terjadi kesalahan server" };
+      }
+    }
+  )
+  .delete(
+    "/users/logout",
+    async ({ headers, set }) => {
+      try {
+        const authHeader = headers.authorization;
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+          set.status = 401;
+          return { error: "Unauthorized" };
+        }
+
+        const [_, token] = authHeader.split(" ");
+        if (!token) {
+          set.status = 401;
+          return { error: "Unauthorized" };
+        }
+
+        const result = await logoutUser(token);
         return result;
       } catch (error: any) {
         if (error.message === "Unauthorized") {
