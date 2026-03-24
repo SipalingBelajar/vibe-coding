@@ -55,19 +55,19 @@ export const userRoutes = new Elysia({ prefix: "/api" })
         const authHeader = headers.authorization;
         if (!authHeader || !authHeader.startsWith("Bearer ")) {
           set.status = 401;
-          return { error: "Email atau password salah" };
+          return { error: "Unauthorized" };
         }
 
         const [_, token] = authHeader.split(" ");
         if (!token) {
           set.status = 401;
-          return { error: "Email atau password salah" };
+          return { error: "Unauthorized" };
         }
 
         const result = await getCurrentUser(token);
         return result;
       } catch (error: any) {
-        if (error.message === "Email atau password salah") {
+        if (error.message === "Unauthorized") {
           set.status = 401;
           return { error: error.message };
         }

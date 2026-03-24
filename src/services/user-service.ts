@@ -80,7 +80,7 @@ export const getCurrentUser = async (token: string) => {
     .limit(1);
 
   if (!result) {
-    throw new Error("Email atau password salah");
+    throw new Error("Unauthorized");
   }
 
   return { data: result };
