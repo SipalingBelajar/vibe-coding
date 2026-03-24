@@ -64,3 +64,24 @@ export const loginUser = async (payload: any) => {
 
   return { data: token };
 };
+
+export const getCurrentUser = async (token: string) => {
+  // 1. Cari user berdasarkan token session dengan join ke table users
+  const [result] = await db
+    .select({
+      id: users.id,
+      name: users.name,
+      email: users.email,
+      createdAt: users.createdAt,
+    })
+    .from(sessions)
+    .innerJoin(users, eq(sessions.userId, users.id))
+    .where(eq(sessions.token, token))
+    .limit(1);
+
+  if (!result) {
+    throw new Error("Email atau password salah");
+  }
+
+  return { data: result };
+};
