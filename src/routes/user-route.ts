@@ -47,4 +47,27 @@ export const userRoutes = new Elysia({ prefix: "/api" })
         password: t.String(),
       }),
     }
+  )
+  .post(
+    "/users/current",
+    async ({ headers, set }) => {
+      try {
+        const authHeader = headers.authorization;
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+          set.status = 401;
+          return { error: "Email atau password salah" };
+        }
+
+        const token = authHeader.split(" ")[1];
+        const result = await getCurrentUser(token);
+        return result;
+      } catch (error: any) {
+        if (error.message === "Email atau password salah") {
+          set.status = 401;
+          return { error: error.message };
+        }
+        set.status = 500;
+        return { error: "Terjadi kesalahan server" };
+      }
+    }
   );
